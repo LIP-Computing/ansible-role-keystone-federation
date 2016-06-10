@@ -1,0 +1,21 @@
+---
+- name: Install packages
+  yum: name={{ item }} state=latest update_cache=yes cache_valid_time=3600
+  with_items:
+    - chrony
+    - httpd
+    - mariadb
+    - mariadb-server
+    - memcached
+    - mod_wsgi
+    - python2-PyMySQL
+    - python-memcached
+    - rabbitmq-server
+
+- name: Install from pip
+  pip: name={{ item }} state=latest
+  with_items:
+    - python-openstackclient
+
+- name: Install keystone
+  pip: name="git+https://github.com/openstack/keystone.git" version="stable/mitaka" state=present
