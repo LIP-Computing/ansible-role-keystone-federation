@@ -1,3 +1,12 @@
 ---
-- name: Configure ntp
+- name: Copy mariadb conf
+  copy: src=mariadb-server.cnf dest=/etc/my.cnf.d/mariadb-server.cnf mode=0644 owner=root group=root backup=yes
+
+- name: Service chrony/ntp, fetch-crl
+  service: name={{ item }} enabled=yes state=restarted
+  with_items:
+    - chronyd
+    - fetch-crl-cron
+    - mariadb
+
 
