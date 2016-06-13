@@ -24,4 +24,4 @@
   mysql_db: name=keystone state=present
 
 - name: set priv to keystone user in keystone DB
-  mysql_user: name=keystone priv=*.*:ALL state=present
+  mysql_user: name=keystone password=12345 priv=*.*:ALL state=present
