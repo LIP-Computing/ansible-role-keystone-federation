@@ -9,6 +9,7 @@
     - fetch-crl-cron
     - mariadb
     - rabbitmq-server
+    - memcached
 
 - name: rabbitmq user setup
   rabbitmq_user: user=openstack
@@ -18,3 +19,9 @@
                  read_priv=.*
                  write_priv=.*
                  state=present
+
+- name: setup keystone DB
+  mysql_db: name=keystone state=present
+
+- name: set priv to keystone user in keystone DB
+  mysql_user: name=keystone priv=*.*:ALL state=present
