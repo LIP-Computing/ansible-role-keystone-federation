@@ -13,5 +13,8 @@
 - name: rabbitmq user setup
   rabbitmq_user: user=openstack
                  password=12345
-                 permissions=[{vhost='/', configure_priv='.*', read_priv='.*', write_priv='.*'}]
+                 vhost=/
+                 configure_priv=.*
+                 read_priv=.*
+                 write_priv=.*
                  state=present
