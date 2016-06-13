@@ -9,6 +9,11 @@ yum -y install python-openstackclient mariadb mariadb-server python2-PyMySQL rab
 yum -y install memcached python-memcached openstack-keystone httpd mod_wsgi
 yum -y upgrade
 
+curl -L http://repository.egi.eu/sw/production/cas/1/current/repo-files/EGI-trustanchors.repo > \
+    /etc/yum.repos.d/EGI-trustanchors.repo
+
+yum -y install ca-policy-egi-core fetch-crl gridsite
+fetch-crl -v
 
 #pip install -U pip
 #pip install git+https://github.com/openstack-infra/shade.git
