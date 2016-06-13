@@ -12,7 +12,7 @@ yum -y upgrade
 curl -L http://repository.egi.eu/sw/production/cas/1/current/repo-files/EGI-trustanchors.repo > \
     /etc/yum.repos.d/EGI-trustanchors.repo
 
-yum -y install ca-policy-egi-core fetch-crl gridsite
+yum -y install ca-policy-egi-core fetch-crl gridsite bind-utils
 fetch-crl -v
 
 #pip install -U pip
