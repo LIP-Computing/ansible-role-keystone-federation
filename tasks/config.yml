@@ -1,8 +1,6 @@
 ---
 - name: Service rabbitmq
   service: name=rabbitmq-server enabled=yes state=restarted
-  become: true
-  become_user: rabbitmq
 
 - name: rabbitmq user setup
   rabbitmq_user: user={{ rabbit_user }}
