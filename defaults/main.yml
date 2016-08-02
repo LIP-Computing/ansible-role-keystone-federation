@@ -18,6 +18,7 @@ keystone_role_name: admin
 keystone_default_role_name: _member_
 
 ## Admin info
+keystone_auth_admin_password: admin
 keystone_admin_user_name: admin
 keystone_admin_tenant_name: admin
 keystone_admin_description: Admin Tenant
