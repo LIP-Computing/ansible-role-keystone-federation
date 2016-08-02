@@ -1,3 +1,3 @@
 ---
-# tasks file for ansible-role-keystone-federation
+- include: install.yml
 - include: config.yml

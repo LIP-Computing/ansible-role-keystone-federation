@@ -1,30 +1,66 @@
 ---
-- name: Copy mariadb conf
-  copy: src=mariadb-server.cnf dest=/etc/my.cnf.d/mariadb-server.cnf mode=0644 owner=root group=root backup=yes
-
-- name: Service chrony/ntp, fetch-crl
-  service: name={{ item }} enabled=yes state=restarted
-  with_items:
-    - chronyd
-    - fetch-crl-cron
-    - mariadb
-    - rabbitmq-server
-    - memcached
+- name: Service rabbitmq
+  service: name=rabbitmq-server enabled=yes state=restarted
+  become: true
+  become_user: rabbitmq
 
 - name: rabbitmq user setup
-  rabbitmq_user: user=openstack
-                 password=12345
+  rabbitmq_user: user={{ rabbit_user }}
+                 password={{ rabbit_pass }}
                  vhost=/
                  configure_priv=.*
                  read_priv=.*
                  write_priv=.*
                  state=present
 
-- name: setup keystone DB
-  mysql_db: name=keystone state=present
-
-- name: set priv to keystone user in keystone DB
-  mysql_user: name=keystone password=12345 priv='*.*:ALL,GRANT' host={{ item }} state=present
+- name: Deploy conf files from templates
+  template: src={{ item.src }} dest={{ item.dest }} mode=0640 owner=keystone group=apache backup=yes
   with_items:
-    - 'localhost'
-    - '%'
+    - { src: 'keystone-dist-paste.ini.j2', dest: '/etc/keystone/keystone-dist-paste.ini' }
+    - { src: 'keystone.conf.j2', dest: '/etc/keystone/keystone.conf' }
+    - { src: 'policy.json.j2', dest: '/etc/keystone/policy.json' }
+    - { src: 'policy.json.j2', dest: '/etc/openstack-dashboard/keystone_policy.json' }
+    - { src: 'local_settings.j2', dest: '/etc/openstack-dashboard/local_settings' }
+    - { src: 'wsgi-keystone.conf.j2', dest: '/etc/httpd/conf.d/wsgi-keystone.conf' }
+
+- name: Create keystone tables in DB
+  command: keystone-manage db_sync
+  become: true
+  become_user: keystone
+
+- name: Initialize fernet tokens
+  command: keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
+
+- name: Service http
+  service: name=httpd enabled=yes state=restarted
+  become: true
+
+- name: Service http wait for start
+  wait_for: host={{ ks_mysql_host }} port=35357
+
+- name: Bootstrap keystone admin and endpoint
+  command: |
+     keystone-manage bootstrap \
+     --bootstrap-username {{ keystone_admin_user_name }} \
+     --bootstrap-password {{ keystone_auth_admin_password }} \
+     --bootstrap-project-name {{ keystone_admin_tenant_name }} \
+     --bootstrap-role-name {{ keystone_role_name }} \
+     --bootstrap-service-name {{ keystone_service_name }} \
+     --bootstrap-region-id {{ keystone_service_region }} \
+     --bootstrap-admin-url https://{{ ks_host }}:35357/v3 \
+     --bootstrap-public-url https://{{ ks_host }}:5000/v3 \
+     --bootstrap-internal-url https://{{ ks_host }}:5000/v3
+  become: yes
+  become_user: keystone
+  register: add_service
+  until: add_service|success
+  retries: 3
+  delay: 5
+
+
+#- name: Create the service entity
+#  command: openstack service create --name keystone --description "OpenStack Identity" identity
+#  environment:
+#    OS_TOKEN: "{{ ks_admin_token }}"
+#    OS_URL: "https://{{ ks_host }}:35357/v3"
+#    OS_IDENTITY_API_VERSION: 3

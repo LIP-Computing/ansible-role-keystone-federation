@@ -1,21 +1,28 @@
 ---
+- name: Install epel and centos-release-openstack-mitaka
+  yum: name={{ item }} state=latest update_cache=yes
+  with_items:
+    - epel-release
+    - centos-release-openstack-mitaka
+
 - name: Install packages
-  yum: name={{ item }} state=latest update_cache=yes cache_valid_time=3600
+  yum: name={{ item }} state=latest update_cache=yes
   with_items:
+    - bind-utils
     - chrony
+    - gcc
+    - git
     - httpd
-    - mariadb
-    - mariadb-server
-    - memcached
     - mod_wsgi
-    - python2-PyMySQL
+    - openstack-keystone
+    - python-devel
     - python-memcached
-    - rabbitmq-server
-
-- name: Install from pip
-  pip: name={{ item }} state=latest
-  with_items:
     - python-openstackclient
+    - python-pip
+    - rabbitmq-server
+    - wget
 
-- name: Install keystone
-  pip: name="git+https://github.com/openstack/keystone.git" version="stable/mitaka" state=present
+- name: Install mod_auth_openidc
+  yum: name={{ item }} state=present update_cache=yes
+  with_items:
+    - https://github.com/pingidentity/mod_auth_openidc/releases/download/v1.8.10.1/mod_auth_openidc-1.8.10.1-1.el7.centos.x86_64.rpm

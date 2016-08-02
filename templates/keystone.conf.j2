@@ -1,0 +1,204 @@
+[DEFAULT]
+debug = false
+
+# admin_token = {{ ks_admin_token }}
+public_endpoint = https://{{ ks_host }}:5000
+admin_endpoint = https://{{ ks_host }}:35357
+member_role_name = _member_
+secure_proxy_ssl_header = HTTP_X_FORWARDED_PROTO
+log_file = /var/log/keystone/keystone.log
+rpc_backend = rabbit
+
+[assignment]
+#driver = <None>
+#prohibited_implied_role = admin
+
+[auth]
+#methods = external,password,token,oauth1
+#password = <None>
+#token = <None>
+#external = <None>
+#oauth1 = <None>
+
+[cache]
+#config_prefix = cache.oslo
+#backend = dogpile.cache.null
+#backend_argument =
+#proxies =
+#enabled = false
+#debug_cache_backend = false
+#memcache_servers = localhost:11211
+
+[catalog]
+#template_file = default_catalog.templates
+#driver = sql
+#caching = true
+
+[cors]
+#allowed_origin = <None>
+#allow_credentials = true
+#expose_headers = X-Auth-Token,X-Openstack-Request-Id,X-Subject-Token
+#allow_methods = GET,PUT,POST,DELETE,PATCH
+#allow_headers = X-Auth-Token,X-Openstack-Request-Id,X-Subject-Token,X-Project-Id,X-Project-Name,X-Project-Domain-Id,X-Project-Domain-Name,X-Domain-Id,X-Domain-Name
+
+[credential]
+#driver = sql
+
+[database]
+connection = {{ ks_mysql_conn }}
+#sqlite_db = oslo.sqlite
+#sqlite_synchronous = true
+#backend = sqlalchemy
+#slave_connection = <None>
+#mysql_sql_mode = TRADITIONAL
+#connection_trace = false
+#use_db_reconnect = false
+#db_inc_retry_interval = true
+
+[domain_config]
+driver = sql
+caching = true
+cache_time = 300
+
+[endpoint_filter]
+#driver = sql
+#return_all_endpoints_if_no_filter = true
+
+[endpoint_policy]
+#enabled = true
+#driver = sql
+
+[eventlet_server]
+#public_workers = <None>
+#admin_workers = <None>
+#public_bind_host = 0.0.0.0
+#public_port = 5000
+#admin_bind_host = 0.0.0.0
+#admin_port = 35357
+#wsgi_keep_alive = true
+
+[eventlet_server_ssl]
+#enable = false
+#certfile = /etc/keystone/ssl/certs/keystone.pem
+#keyfile = /etc/keystone/ssl/private/keystonekey.pem
+#ca_certs = /etc/keystone/ssl/certs/ca.pem
+#cert_required = false
+
+[federation]
+driver = sql
+#assertion_prefix =
+#remote_id_attribute = <None>
+#federated_domain_name = Federated
+#trusted_dashboard =
+#sso_callback_template = /etc/keystone/sso_callback_template.html
+
+[fernet_tokens]
+key_repository = /etc/keystone/fernet-keys/
+max_active_keys = 3
+
+[identity]
+#default_domain_id = default
+#domain_specific_drivers_enabled = false
+#domain_configurations_from_database = false
+#domain_config_dir = /etc/keystone/domains
+#driver = sql
+#caching = true
+
+[identity_mapping]
+#driver = sql
+#generator = sha256
+#backward_compatible_ids = true
+
+[memcache]
+servers = localhost:11211
+
+[oauth1]
+driver = sql
+#request_token_duration = 28800
+#access_token_duration = 86400
+
+[oslo_messaging_notifications]
+#driver =
+#transport_url = <None>
+#topics = notifications
+
+[oslo_messaging_rabbit]
+rabbit_host = {{ rabbit_host }}
+rabbit_port = 5672
+rabbit_userid = {{ rabbit_user }}
+rabbit_password = {{ rabbit_pass }}
+
+#rabbit_hosts = $rabbit_host:$rabbit_port
+#rabbit_use_ssl = false
+#rabbit_login_method = AMQPLAIN
+#rabbit_virtual_host = /
+#rabbit_ha_queues = false
+
+[oslo_middleware]
+#max_request_body_size = 114688
+#secure_proxy_ssl_header = X-Forwarded-Proto
+
+[oslo_policy]
+policy_file = policy.json
+policy_default_rule = default
+#policy_dirs = policy.d
+
+[paste_deploy]
+config_file = /etc/keystone/keystone-dist-paste.ini
+
+[policy]
+#driver = sql
+#list_limit = <None>
+
+[resource]
+driver = sql
+#caching = true
+#project_name_url_safe = off
+#domain_name_url_safe = off
+
+[revoke]
+#driver = sql
+#expiration_buffer = 1800
+#caching = true
+#cache_time = 3600
+
+[role]
+#driver = <None>
+#caching = true
+#cache_time = <None>
+#list_limit = <None>
+
+[shadow_users]
+#driver = sql
+
+[ssl]
+#ca_key = /etc/keystone/ssl/private/cakey.pem
+#key_size = 1024
+#valid_days = 3650
+#cert_subject = /C=US/ST=Unset/L=Unset/O=Unset/CN=localhost
+
+[token]
+provider = fernet
+driver = sql
+expiration = 432000
+
+#bind =
+#enforce_token_bind = permissive
+#caching = true
+#cache_time = <None>
+#revoke_by_id = true
+#allow_rescope_scoped_token = true
+#hash_algorithm = md5
+#infer_roles = true
+
+[tokenless_auth]
+#trusted_issuer =
+#protocol = x509
+#issuer_attribute = SSL_CLIENT_I_DN
+
+[trust]
+enabled = true
+driver = sql
+
+#allow_redelegation = false
+#max_redelegation_count = 3
