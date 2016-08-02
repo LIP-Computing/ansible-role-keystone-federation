@@ -31,7 +31,6 @@
 
 - name: Service http
   service: name=httpd enabled=yes state=restarted
-  become: true
 
 - name: Service http wait for start
   wait_for: host={{ ks_mysql_host }} port=35357
