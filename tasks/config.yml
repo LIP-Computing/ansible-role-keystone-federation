@@ -51,15 +51,3 @@
   until: add_service|success
   retries: 3
   delay: 5
-
-- name: Create demo project
-  command: openstack project create demo
-  environment:
-    OS_IDENTITY_API_VERSION: 3
-    OS_AUTH_URL: "https://{{ ks_host }}:35357/v3"
-    OS_CACERT: "/etc/certs/host-cert.pem"
-    OS_PASSWORD: "{{ keystone_auth_admin_password }}"
-    OS_PROJECT_DOMAIN_NAME: default
-    OS_PROJECT_NAME: admin
-    OS_USER_DOMAIN_NAME: default
-    OS_USERNAME: "{{ keystone_admin_user_name }}"
