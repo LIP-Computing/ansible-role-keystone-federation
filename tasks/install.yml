@@ -13,6 +13,7 @@
     - gcc
     - git
     - httpd
+    - mod_ssl
     - mod_wsgi
     - openstack-dashboard
     - openstack-keystone
