@@ -1,4 +1,9 @@
 ---
+- name: Get LCG-CA repo
+  get_url: url=http://repository.egi.eu/sw/production/cas/1/current/repo-files/EGI-trustanchors.repo
+           dest=/etc/yum.repos.d/EGI-trustanchors.repo
+           mode=0644
+
 - name: Install epel and centos-release-openstack-mitaka
   yum: name={{ item }} state=latest update_cache=yes
   with_items:
@@ -9,6 +14,7 @@
   yum: name={{ item }} state=latest update_cache=yes
   with_items:
     - bind-utils
+    - ca-policy-egi-core
     - chrony
     - gcc
     - git
