@@ -1,26 +1,22 @@
 ---
-- name: Service rabbitmq
-  service: name=rabbitmq-server enabled=yes state=restarted
-
-- name: rabbitmq user setup
-  rabbitmq_user: user={{ rabbit_user }}
-                 password={{ rabbit_pass }}
-                 vhost=/
-                 configure_priv=.*
-                 read_priv=.*
-                 write_priv=.*
-                 state=present
-
 - name: Deploy conf files from templates
-  template: src={{ item.src }} dest={{ item.dest }} mode=0640 owner=keystone group=apache backup=yes
+  template: src={{ item.src }} dest={{ item.dest }} mode=0640 owner=keystone group=root
   with_items:
-    - { src: 'keystone-dist-paste.ini.j2', dest: '/etc/keystone/keystone-dist-paste.ini' }
     - { src: 'keystone.conf.j2', dest: '/etc/keystone/keystone.conf' }
-    - { src: 'policy.json.j2', dest: '/etc/keystone/policy.json' }
-    - { src: 'policy.json.j2', dest: '/etc/openstack-dashboard/keystone_policy.json' }
-    - { src: 'local_settings.j2', dest: '/etc/openstack-dashboard/local_settings' }
-    - { src: 'wsgi-keystone.conf.j2', dest: '/etc/httpd/conf.d/wsgi-keystone.conf' }
+    - { src: 'wsgi-keystone.conf.j2', dest: '/etc/apache2/sites-available/keystone.conf' }
 
+- name: Create keystone database
+  mysql_db:
+    name: keystone
+    state: present
+
+- name: Create keystone DB user
+  mysql_user:
+    name: keystone
+    password: '{{ dbpass_keystone }}'
+    priv: 'keystone.*:ALL,GRANT'
+    state: present
+ 
 - name: Create keystone tables in DB
   command: keystone-manage db_sync
   become: true
@@ -28,6 +24,10 @@
 
 - name: Initialize fernet tokens
   command: keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
+
+- name: Initialize fernet tokens
+  command: keystone-manage credential_setup --keystone-user keystone --keystone-group keystone
+
 
 - name: Service http
   service: name=httpd enabled=yes state=restarted
@@ -38,12 +38,8 @@
 - name: Bootstrap keystone admin and endpoint
   command: |
      keystone-manage bootstrap \
-     --bootstrap-username {{ keystone_admin_user_name }} \
-     --bootstrap-password {{ keystone_auth_admin_password }} \
-     --bootstrap-project-name {{ keystone_admin_tenant_name }} \
-     --bootstrap-role-name {{ keystone_role_name }} \
-     --bootstrap-service-name {{ keystone_service_name }} \
-     --bootstrap-region-id {{ keystone_service_region }} \
+     --bootstrap-password {{ ks_auth_admin_password }} \
+     --bootstrap-region-id {{ ks_service_region }} \
      --bootstrap-admin-url https://{{ ks_host }}:35357/v3 \
      --bootstrap-public-url https://{{ ks_host }}:5000/v3 \
      --bootstrap-internal-url https://{{ ks_host }}:5000/v3

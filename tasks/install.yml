@@ -1,36 +1,13 @@
 ---
-- name: Get LCG-CA repo
-  get_url: url=http://repository.egi.eu/sw/production/cas/1/current/repo-files/EGI-trustanchors.repo
-           dest=/etc/yum.repos.d/EGI-trustanchors.repo
-           mode=0644
-
-- name: Install epel and centos-release-openstack-mitaka
-  yum: name={{ item }} state=latest update_cache=yes
+- name: Install packages keystone and mod-wsgi
+  apt: name={{ item }} state=latest update_cache=yes
   with_items:
-    - epel-release
-    - centos-release-openstack-mitaka
+    - keystone
+    - libapache2-mod-wsgi
 
-- name: Install packages
-  yum: name={{ item }} state=latest update_cache=yes
+- name: Install cjose and mod_auth_openidc
+  apt: deb={{ item }}
   with_items:
-    - bind-utils
-    - ca-policy-egi-core
-    - chrony
-    - gcc
-    - git
-    - httpd
-    - mod_ssl
-    - mod_wsgi
-    - openstack-dashboard
-    - openstack-keystone
-    - python-devel
-    - python-memcached
-    - python-openstackclient
-    - python-pip
-    - rabbitmq-server
-    - wget
+    - '{{ url_cjose }}'
+    - '{{ url_oidc }}'
 
-- name: Install mod_auth_openidc
-  yum: name={{ item }} state=present update_cache=yes
-  with_items:
-    - https://github.com/pingidentity/mod_auth_openidc/releases/download/v1.8.10.1/mod_auth_openidc-1.8.10.1-1.el7.centos.x86_64.rpm

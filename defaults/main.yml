@@ -1,33 +1,25 @@
 ---
-# rabbitmq variables
-rabbit_host: localhost
-rabbit_user: openstack
-rabbit_pass: 12345
+# Apache service variables
+apache_state: started
+apache_restart_state: restarted
+apache_service: apache2
+
+# mod_auth_oidc download URLs
+ver_ubuntu: 'bionic'
+
+ver_oidc: '2.3.4'
+pack_oidc: 'libapache2-mod-auth-openidc_{{ ver_oidc }}-1.{{ ver_ubuntu }}.1_amd64.deb'
+url_oidc: 'https://github.com/zmartzone/mod_auth_openidc/releases/download/v{{ ver_oidc }/{{ pack_oidc }}'
+
+ver_cjose: '0.5.1'
+pack_cjose: 'libcjose0_{{ ver_cjose }}-1.{{ ver_ubuntu }.1_amd64.deb'
+url_cjose: 'https://github.com/zmartzone/mod_auth_openidc/releases/download/v2.3.0/{{ pack_cjose }}'
 
 # Keystone conf variables
-ks_admin_token: ed5095f8afb6c7d7cea4
-ks_mysql_user: keystone
-ks_mysql_pass: 12345
+dbpass_keystone: 12345
 ks_mysql_host: localhost
-ks_mysql_conn: "mysql+pymysql://{{ ks_mysql_user }}:{{ ks_mysql_pass }}@{{ ks_mysql_host }}/keystone"
-
+ks_mysql_conn: "mysql+pymysql://keystone:{{ dbpass_keystone }}@{{ ks_mysql_host }}/keystone"
 ks_host: 0.0.0.0
+ks_auth_admin_password: 12345
+ks_service_region: RegionOne
 
-## Role info
-keystone_role_name: admin
-keystone_default_role_name: _member_
-
-## Admin info
-keystone_auth_admin_password: admin
-keystone_admin_user_name: admin
-keystone_admin_tenant_name: admin
-keystone_admin_description: Admin Tenant
-
-## Service Type and Data
-keystone_service_setup: true
-keystone_service_region: RegionOne
-keystone_service_name: keystone
-keystone_service_type: identity
-keystone_service_description: "Keystone Identity Service"
-keystone_service_user_name: keystone
-keystone_service_tenant_name: service
