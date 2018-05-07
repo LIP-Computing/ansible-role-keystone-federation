@@ -9,10 +9,10 @@ ver_ubuntu: 'bionic'
 
 ver_oidc: '2.3.4'
 pack_oidc: 'libapache2-mod-auth-openidc_{{ ver_oidc }}-1.{{ ver_ubuntu }}.1_amd64.deb'
-url_oidc: 'https://github.com/zmartzone/mod_auth_openidc/releases/download/v{{ ver_oidc }/{{ pack_oidc }}'
+url_oidc: 'https://github.com/zmartzone/mod_auth_openidc/releases/download/v{{ ver_oidc }}/{{ pack_oidc }}'
 
 ver_cjose: '0.5.1'
-pack_cjose: 'libcjose0_{{ ver_cjose }}-1.{{ ver_ubuntu }.1_amd64.deb'
+pack_cjose: 'libcjose0_{{ ver_cjose }}-1.{{ ver_ubuntu }}.1_amd64.deb'
 url_cjose: 'https://github.com/zmartzone/mod_auth_openidc/releases/download/v2.3.0/{{ pack_cjose }}'
 
 # Keystone conf variables
