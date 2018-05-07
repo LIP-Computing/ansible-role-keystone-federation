@@ -4,6 +4,7 @@
   with_items:
     - keystone
     - libapache2-mod-wsgi
+    - python-openstackclient
 
 - name: Install cjose and mod_auth_openidc
   apt: deb={{ item }}
